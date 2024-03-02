@@ -16,3 +16,7 @@ Desktop.ini
 # Editors
 .idea/
 .vscode/
+
+# Sensitivite data
+data/
+.env
