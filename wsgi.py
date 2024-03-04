@@ -11,6 +11,7 @@
 # This software is distributed under the terms of the MIT license.
 # -----------------------------------------------------------------------------
 
+import argparse
 import subprocess
 from sees_voting_app import create_flask_app
 
@@ -18,5 +19,19 @@ from sees_voting_app import create_flask_app
 app = create_flask_app()
 
 
+def main() -> None:
+    """Main entry point for the sees-voting-app."""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="SEES Voting App")
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug mode")
+    args = parser.parse_args()
+
+    # Run the Flask app
+    if args.debug:
+        app.run(host="0.0.0.0", port=5000, debug=True)
+    else:
+        subprocess.run(["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "wsgi:app"])
+
+
 if __name__ == "__main__":
-    subprocess.run(["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "wsgi:app"])
+    main()
