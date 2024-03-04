@@ -24,8 +24,10 @@ $(document).ready(function() {
         $(".choice option").each(function() {
             if (selectedOptions.includes($(this).val()) && !$(this).is(":selected") && $(this).val() !== "default") {
                 $(this).prop("disabled", true);
+                $(this).addClass("disabled");
             } else {
                 $(this).prop("disabled", false);
+                $(this).removeClass("disabled");
             }
         });
     }).change();  // Trigger the change event after setting up the event handler

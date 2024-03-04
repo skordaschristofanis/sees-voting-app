@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect
 
 from sees_voting_app import sender_address, admin_mailing_list
 from sees_voting_app.forms import VoteForm
@@ -45,11 +45,6 @@ def vote():
         send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
 
         # Thank the voter for voting
-        return redirect(url_for("voting.thanks"))
+        return redirect("https://seescience.org/")
 
     return render_template("vote.html", form=form)
-
-
-@voting.route("/thanks-for-voting")
-def thanks():
-    return "Thanks for voting!"

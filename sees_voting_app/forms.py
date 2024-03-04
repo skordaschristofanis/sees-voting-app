@@ -17,7 +17,7 @@ class VoteForm(FlaskForm):
     full_name = StringField("Full Name", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     orcid_id = StringField(
-        "ORCID iD",
+        "ORCID iD (16-digit number)",
         validators=[
             DataRequired(),
             Regexp(
