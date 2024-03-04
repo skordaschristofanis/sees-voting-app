@@ -1,3 +1,17 @@
+#!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: forms.py
+# -----------------------------------------------------------------------------
+# Purpose:
+# This file is used to define the form for the ranking vote. The form is
+# created using the Flask-WTF extension and includes fields for the user's
+# full name, email, ORCID iD, and the candidates they are voting for.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, Regexp

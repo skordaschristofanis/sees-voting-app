@@ -1,3 +1,18 @@
+#!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: voting_system.py
+# -----------------------------------------------------------------------------
+# Purpose:
+# This file is used to define the voting system for the SEES election. The
+# Candidate class is used to represent a candidate and their bio URL. The Voter
+# class is used to represent a voter and their selections. The VotingSystem class
+# is used to manage the ranking voting system and record the votes.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 import csv
 from dataclasses import dataclass, field
 from pathlib import Path

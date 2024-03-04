@@ -1,3 +1,17 @@
+#!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: routes.py
+# -----------------------------------------------------------------------------
+# Purpose:
+# This file is used to define the routes for the voting app. The voting route
+# displays the voting form and processes the vote. The vote is recorded using
+# the VotingSystem class and the voter is notified by email if requested.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 from flask import Blueprint, render_template, request, redirect
 
 from sees_voting_app import sender_address, admin_mailing_list

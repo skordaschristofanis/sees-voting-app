@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: __init__.py
+# -----------------------------------------------------------------------------
+# Purpose:
+# This is the main entry point for the sees-voting-app. This file is used to
+# configure the Flask app and initialize the Mail instance.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 from flask import Flask
 from flask_mailman import Mail
 

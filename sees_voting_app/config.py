@@ -1,3 +1,15 @@
+#!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: config.py
+# -----------------------------------------------------------------------------
+# Purpose:
+# This file is used to define the configuration settings for the Flask app.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 import os
 from dataclasses import dataclass, field
 from dotenv import load_dotenv

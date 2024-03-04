@@ -1,3 +1,14 @@
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: .gitignore
+# -----------------------------------------------------------------------------
+# Purpose:
+# This file is used to ignore files and directories from being tracked by git.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

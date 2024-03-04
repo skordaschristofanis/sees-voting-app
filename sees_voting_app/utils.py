@@ -1,3 +1,17 @@
+#!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Project: SEES-Voting-App
+# File: utils.py
+# -----------------------------------------------------------------------------
+# Purpose:
+# This file is used to define utility functions for the voting app. The
+# functions are used to send confirmation emails to voters and to notify the
+# admin group when a new vote is recorded.
+#
+# Copyright (C) 2024 GSECARS, The University of Chicago, USA
+# This software is distributed under the terms of the MIT license.
+# -----------------------------------------------------------------------------
+
 from flask_mailman import EmailMessage
 from typing import List
 
