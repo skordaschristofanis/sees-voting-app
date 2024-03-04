@@ -1,44 +1,54 @@
-from flask_mail import Message
+from flask_mailman import EmailMessage
 from typing import List
 
-from sees_voting_app import mail
 from sees_voting_app.voting_system import Voter
 
 
 def send_comfirmation_email(sender_address, voter: Voter) -> None:
     """Send a confirmation email to the voter."""
-
+    
     # Create the message
-    msg = Message(
-        "Voting Confirmation",
-        sender=sender_address,
-        recipients=[voter.email],
+    msg = EmailMessage(
+        subject="Voting Confirmation",
+        from_email=sender_address,
+        to=[voter.email],
     )
 
     # Set the selection string
     selections = "\n".join(
         [
-            f"{selection.name}: {selection.bio_url}"
+            f"{selection.name}: <a href='{selection.bio_url}'>{selection.bio_url}</a><br>"
             for selection in voter.selections_list
         ]
     )
 
     # Set the body of the message
-    msg.body = f"""Hello {voter.full_name},
+    msg.body = f"""
+<html>
+    <head>
+        <body>
+            <p>Hello {voter.full_name},</p>
 
-Thank you for voting in the SEES election. Your vote has been recorded.
+            <p>Thank you for voting in the SEES election. Your vote has been recorded.</p>
 
-Your selections are as follows:
-{selections}
+            <p>Your selections are as follows:<br>
+            {selections}</p>
 
-This is an automated message. Please do not reply to this email.
+            <p>This is an automated message. Please do not reply to this email.</p>
 
-Best regards,
-The SEES Team
-mailto:sees_info@millenia.cars.aps.anl.gov
+            <p>Best regards,<br>
+            The SEES Team<br>
+            <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a></p>
+        </body>
+    </head>
+<html>
 """
+
+    # Set the content type to HTML
+    msg.content_subtype = "html"
+
     try:
-        mail.send(msg)
+        msg.send()
     except Exception as e:
         # Temporary catch-all exception handling until the mail is properly configured
         print(f"An error occurred while sending the email: {e}")
@@ -49,18 +59,11 @@ def send_vote_to_admin_group(
 ) -> None:
     """Send the vote to the admin group."""
 
-    # Create the message
-    msg = Message(
-        "New Vote for SEES election.",
-        sender=sender_address,
-        recipients=mailing_list,
-    )
-
     # Create the selections string
     selections = "\n".join([f"{selection.name}" for selection in voter.selections_list])
 
     # Set the body of the message
-    msg.body = f"""Hello all,
+    body = f"""Hello all,
 
 A new vote has been recorded in the SEES election.
 
@@ -75,8 +78,17 @@ Selections:
 Best regards,
 The SEES Team
 """
+
+    # Create the message
+    msg = EmailMessage(
+        "New Vote for SEES election.",
+        body,
+        sender_address,
+        mailing_list,
+    )
+
     try:
-        mail.send(msg)
+        msg.send()
     except Exception as e:
         # Temporary catch-all exception handling until the mail is properly configured
         print(f"An error occurred while sending the email: {e}")

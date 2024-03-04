@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 
+from sees_voting_app import sender_address, admin_mailing_list
 from sees_voting_app.forms import VoteForm
 from sees_voting_app.voting_system import Voter, VotingSystem
 from sees_voting_app.utils import send_comfirmation_email, send_vote_to_admin_group
@@ -38,10 +39,10 @@ def vote():
 
         # Send a confirmation email
         if request.form.get("send_email"):
-            send_comfirmation_email(sender_address="", voter=voter)
+            send_comfirmation_email(sender_address=sender_address, voter=voter)
 
         # Notify the admin group
-        send_vote_to_admin_group(sender_address="", mailing_list=[], voter=voter)
+        send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
 
         # Thank the voter for voting
         return redirect(url_for("voting.thanks"))
