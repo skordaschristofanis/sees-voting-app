@@ -35,7 +35,7 @@ class VoteForm(FlaskForm):
         validators=[
             DataRequired(),
             Regexp(
-                r"^\d{4}-\d{4}-\d{4}-\d{4}$",
+                r"^\d{4}-\d{4}-\d{4}-\d{3}[0-9X]$",
                 message="Please enter a valid ORCID iD (e.g. 0000-0000-0000-0000)",
             ),
         ],

@@ -48,13 +48,27 @@ Before starting the web server, there is some configuration steps that are neede
 3. Edit the candidates.csv file and put the desired names with their bio link. Make sure to keep the same format for the csv file.
 
 ### Running the Server
-After setting up and configuring the project, you can start the Gunicorn server by running the [wsgi.py](wsgi.py) file:
+After setting up and configuring the project, you can start the Gunicorn server by running the [voting_app.py](voting_app.py) file:
 
+#### Production
 ```bash
-python wsgi.py
+python voting_app.py
+```
+
+#### Debug mode
+For debug mode you can use the --debug or -d flag:
+```bash
+python voting_app.py --debug
 ```
 
 [back to top](#table-of-contents)
+
+
+### Vote results
+To combine the results to a signle file, you can use the flag --results or -r when running the [voting_app.py](voting_app.py) file.
+```bash
+python voting_app.py --results
+```
 
 ------------
 ## Contributing

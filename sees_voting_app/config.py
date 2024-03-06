@@ -30,8 +30,6 @@ class Config:
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
     MAIL_USE_TLS = os.getenv("MAIL_USE_TLS")
-    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
-    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
 
 @dataclass
@@ -41,7 +39,7 @@ class MailConfig:
     _admin_mailing_list: str = field(init=False, compare=False, repr=False)
 
     def __post_init__(self) -> None:
-        self._sender_address = os.getenv("MAIL_USERNAME")
+        self._sender_address = os.getenv("MAIL_SENDER_ADDRESS")
         self._admin_mailing_list = os.getenv("ADMIN_MAILING_LIST").replace("[", "").replace("]", "").replace(" ", "")
 
     @property

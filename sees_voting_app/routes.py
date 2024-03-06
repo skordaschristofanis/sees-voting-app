@@ -24,7 +24,7 @@ from sees_voting_app.utils import send_comfirmation_email, send_vote_to_admin_gr
 voting = Blueprint("voting", __name__)
 
 
-@voting.route("/vote", methods=["GET", "POST"])
+@voting.route("/", methods=["GET", "POST"])
 def vote():
     """Display the voting form and process the vote."""
 
