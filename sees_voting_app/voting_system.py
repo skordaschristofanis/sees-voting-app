@@ -14,6 +14,7 @@
 # -----------------------------------------------------------------------------
 
 import csv
+from datetime import datetime
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
@@ -102,9 +103,14 @@ class VotingSystem:
                 if selection == candidate.name:
                     voter.selections_list.append(candidate)
 
-        # Write the data to the responses.csv file
-        with open(responses_csv, "a") as file:
+        # Set the path to the new CSV file
+        timestamp = datetime.now().strftime("%Y.%m.%d_%H.%M.%S")
+        response_csv = Path(__file__).parent.parent / "data" / f"{voter.orcid_id}_{timestamp}.csv"
+
+        # Write the data to the new CSV file
+        with open(response_csv, "w") as file:
             writer = csv.writer(file)
+            writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4", "Pref5"])
             writer.writerow(data)
 
     @property
