@@ -12,10 +12,17 @@
 # This software is distributed under the terms of the MIT license.
 # -----------------------------------------------------------------------------
 
+import csv
+import glob
+import re
 from flask_mailman import EmailMessage
+from pathlib import Path
 from typing import List
 
 from sees_voting_app.voting_system import Voter
+
+
+__all__ = ["combine_results"]
 
 
 def send_comfirmation_email(sender_address, voter: Voter) -> None:
@@ -106,3 +113,31 @@ The SEES Team
     except Exception as e:
         # Temporary catch-all exception handling until the mail is properly configured
         print(f"An error occurred while sending the email: {e}")
+
+
+def combine_results() -> None:
+    """Combine the results and generate a responses.csv file."""
+    # Set the path to the combined CSV file
+    combined_results_csv = Path(__file__).parent.parent / "data" / "responses.csv"
+
+    # Get a list of all the CSV files
+    csv_files = glob.glob(str(Path(__file__).parent.parent / "data" / "*.csv"))
+
+    # Write the header to the combined CSV file
+    with open(combined_results_csv, "w") as file:
+        writer = csv.writer(file)
+        writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4", "Pref5"])
+
+    # Append the data from each CSV file to the combined CSV file
+    for csv_file in csv_files:
+        # Skip files that do not start with an ORCID iD
+        if not re.match(r".*/\d{4}-\d{4}-\d{4}-\d{3}[0-9X]\_.*\.csv", csv_file):
+            continue
+
+        if csv_file == str(combined_results_csv):
+            continue
+        with open(csv_file, "r") as file:
+            next(file)  # Skip the header
+            with open(combined_results_csv, "a") as combined_file:
+                for line in file:
+                    combined_file.write(line)
