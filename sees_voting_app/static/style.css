@@ -4,50 +4,21 @@
 }
 
 body {
-    display: grid;
-    grid-template-rows: 1fr auto;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
 }
 
 .content {
-    width: 100%;
-    overflow: auto;
+    flex: 1;
 }
 
 footer {
-    
-    a {
-        color: #50c0b5;
-        font-weight: 500;
-        font-size: 18px;
-    }
-
-    a:hover {
-        color: #142346;
-        text-decoration: underline;
-    }
-}
-
-.footer-col {
-    padding: 40px 0;
-}
-
-.bg-custom {
-    background-color: #e0efee;
-}
-
-body {
-    display: grid;
-    grid-template-rows: 1fr auto;
-    min-height: 100vh;
-}
-
-.content {
+    position: static;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    overflow: auto;
-}
-
-footer {
     
     a {
         color: #50c0b5;
