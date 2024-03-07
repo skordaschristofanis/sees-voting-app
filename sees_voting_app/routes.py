@@ -69,6 +69,10 @@ def vote():
         send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
 
         # Thank the voter for voting
-        return redirect("https://seescience.org/")
+        flash("""
+<h4>Vote Submitted Successfully</h4>
+<p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+""", "success")
+        return render_template("vote.html", form=form)
 
     return render_template("vote.html", form=form)
