@@ -35,6 +35,12 @@ def vote():
     form.set_candidate_choices(voting_system.candidates)
 
     if form.validate_on_submit():
+        
+        # Check if the orcid_id is already in the database
+        if voting_system.orcid_exists(orcid_id=request.form.get("orcid_id")):
+            print("The ORCID iD is already in the database.")
+            return redirect("https://seescience.org/")
+        
         # Create a Voter instance
         voter = Voter()
 
