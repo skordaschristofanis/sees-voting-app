@@ -49,3 +49,16 @@ class MailConfig:
     @property
     def admin_mailing_list(self) -> List[str]:
         return self._admin_mailing_list.split(",")
+
+
+@dataclass
+class DBConfig:
+    """A class that provides the configuration settings for the database."""
+    _database_uri: str = field(init=False, compare=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self._database_uri = os.getenv("DATABASE_URI")
+    
+    @property
+    def database_uri(self) -> str:
+        return self._database_uri

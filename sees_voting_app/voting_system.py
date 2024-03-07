@@ -18,9 +18,26 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
+from sqlalchemy import Column, Integer, String
+
+from sees_voting_app import Base, db_session
 
 
 __all__ = ["Candidate", "Voter", "VotingSystem"]
+
+
+class Vote(Base):
+    __tablename__ = 'votes'
+
+    id = Column(Integer, primary_key=True)
+    full_name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False)
+    orcid_id = Column(String(255), nullable=False)
+    selection_1 = Column(String(255), nullable=False)
+    selection_2 = Column(String(255), nullable=False)
+    selection_3 = Column(String(255), nullable=False)
+    selection_4 = Column(String(255), nullable=False)
+    selection_5 = Column(String(255), nullable=False)
 
 
 @dataclass
@@ -72,10 +89,12 @@ class VotingSystem:
                 Candidate(name=row[0], bio_url=row[1]) for row in reader
             ]
 
+    def orcid_exists(self, orcid_id: str) -> bool:
+        """Checks if an ORCID iD already exists in the database."""
+        return db_session.query(Vote.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
+
     def record_vote(self, voter: Voter, candidates: List[Candidate]) -> None:
-        """Appends the voter's selections to the responses.csv file."""
-        # Set the path to the responses.csv file
-        responses_csv = Path(__file__).parent.parent / "data" / "responses.csv"
+        """Creates a .csv file with the voter's selections and adds a new entry to the votes table."""
         # Prepare the data format
         data = [
             voter.full_name,
@@ -112,6 +131,25 @@ class VotingSystem:
             writer = csv.writer(file)
             writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4", "Pref5"])
             writer.writerow(data)
+
+        # Create a new entry in the votes table
+        new_vote = Vote(
+            full_name=voter.full_name,
+            email=voter.email,
+            orcid_id=voter.orcid_id,
+            selection_1=voter.selection_1,
+            selection_2=voter.selection_2,
+            selection_3=voter.selection_3,
+            selection_4=voter.selection_4,
+            selection_5=voter.selection_5
+        )
+
+        # Add the new Vote instance to the database session and commit the changes
+        db_session.add(new_vote)
+        db_session.commit()
+
+        # Print the vote
+        print(f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}")
 
     @property
     def candidates(self) -> List[Candidate]:

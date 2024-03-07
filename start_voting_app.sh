@@ -1,20 +1,15 @@
+#!/bin/bash
 # -----------------------------------------------------------------------------
 # Project: SEES-Voting-App
-# File: requirements.txt
+# File: start_voting_app.sh
 # -----------------------------------------------------------------------------
 # Purpose:
-# The purpose of this file is to list all the dependencies that are required
-# to run the SEES Voting App.
+# This script is used to start the SEES-Voting-App web application.
 #
 # Copyright (C) 2024 GSECARS, The University of Chicago, USA
 # This software is distributed under the terms of the MIT license.
 # -----------------------------------------------------------------------------
 
-flask==3.0.2
-flask-mailman==1.0.0
-flask-wtf==1.2.1
-email-validator==2.1.1
-python-dotenv==1.0.1
-gunicorn==21.2.0
-sqlalchemy==2.0.28
-mysql-connector-python==8.3.0
+source /usr/share/anaconda3/bin/activate
+conda activate votingAppENV
+python /usr/share/sees-voting-app/voting_app.py
