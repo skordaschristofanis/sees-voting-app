@@ -12,7 +12,7 @@
 # This software is distributed under the terms of the MIT license.
 # -----------------------------------------------------------------------------
 
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, flash
 
 from sees_voting_app import sender_address, admin_mailing_list
 from sees_voting_app.forms import VoteForm
@@ -39,7 +39,11 @@ def vote():
         # Check if the orcid_id is already in the database
         if voting_system.orcid_exists(orcid_id=request.form.get("orcid_id")):
             print("The ORCID iD is already in the database.")
-            return redirect("https://seescience.org/")
+            flash("""
+<h4>Failure to Submit the Vote</h4>
+<p>The provided ORCID iD is already in use. Please check that your ORCID iD is correct. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+""", "danger")
+            return render_template("vote.html", form=form)
         
         # Create a Voter instance
         voter = Voter()
@@ -65,6 +69,10 @@ def vote():
         send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
 
         # Thank the voter for voting
-        return redirect("https://seescience.org/")
+        flash("""
+<h4>Vote Submitted Successfully</h4>
+<p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+""", "success")
+        return render_template("vote.html", form=form)
 
     return render_template("vote.html", form=form)
