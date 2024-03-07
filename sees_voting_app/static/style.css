@@ -10,6 +10,21 @@ body {
     min-height: 100vh;
 }
 
+h4 {
+    color: #152249!important;
+    font-weight: 500;
+}
+
+a {
+    color: #50c0b5!important;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #142346;
+    text-decoration: underline;
+}
+
 .content {
     flex: 1;
     padding: 25px 0;
@@ -20,16 +35,9 @@ footer {
     bottom: 0;
     left: 0;
     width: 100%;
-    
-    a {
-        color: #50c0b5;
-        font-weight: 500;
-        font-size: 18px;
-    }
 
-    a:hover {
-        color: #142346;
-        text-decoration: underline;
+    a {
+        font-size: 18px;
     }
 }
 
@@ -39,4 +47,10 @@ footer {
 
 .bg-custom {
     background-color: #e0efee;
+}
+
+.alert-danger {
+    color: #e4d6d8!important;
+    background-color: #852f36a6 !important;
+    border-color: #852f36a6 !important;
 }
