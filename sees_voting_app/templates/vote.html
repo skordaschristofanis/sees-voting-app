@@ -13,7 +13,10 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Vote</legend>
+              <legend class="border-bottom mb-4">Vote in the
+              <a href=https://seescience.org/usergroup_election2024/>SEES User
+              Group Committee Election 2024</a>       </legend>
+
                 <!-- Full Name Field -->
                 <div class="form-group">
                     {{ form.full_name.label(class="form-control-label") }}
@@ -30,7 +33,10 @@
                 </div>
                 <!-- Email Field -->
                 <div class="form-group">
-                    {{ form.email.label(class="form-control-label") }}
+                    {{ form.email.label(class="form-control-label") }} (Are you a
+                    member of the
+                    <a href=https://millenia.cars.aps.anl.gov/mailman/listinfo/sees_users/>
+                    SEES Users Mailing List</a>?)
                     {% if form.email.errors %}
                         {{ form.email(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
@@ -44,7 +50,8 @@
                 </div>
                 <!-- ORCID iD Field -->
                 <div class="form-group">
-                    {{ form.orcid_id.label(class="form-control-label") }}
+                    {{ form.orcid_id.label(class="form-control-label") }} (see
+                    <a href=https://orcid.org>ORCID</a>)
                     {% if form.orcid_id.errors %}
                         {{ form.orcid_id(id="orcid", class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
@@ -55,6 +62,14 @@
                     {% else %}
                         {{ form.orcid_id(id="orcid", class="form-control form-control-lg") }}
                     {% endif %}
+                </div>
+                <div>
+                  Select 4 Candidates, in your order of preference for Ranked
+                  Choice Voting. <br>See
+                  <a href=https://seescience.org/usergroup_election2024/#how_to_vote>How to
+                    Vote</a> and the
+                  <a href=https://seescience.org/usergroup_election2024/#candidates>List
+                  of Candidates</a> for more details.
                 </div>
                 <!-- Candidate 1st Selection -->
                 <div class="form-group">
@@ -116,21 +131,6 @@
                     {% endif %}
                     <option value="" selected>Select a candidate...</option>
                 </div>
-                <!-- Candidate 5th Selection -->
-                <div class="form-group">
-                    {{ form.selection_5.label(class="form-control-label") }}
-                    {% if form.selection_5.errors %}
-                        {{ form.selection_5(class="form-control form-control-lg is-invalid choice") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.selection_5.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.selection_5(class="form-control form-control-lg choice") }}
-                    {% endif %}
-                    <option value="" selected>Select a candidate...</option>
-                </div>
             </fieldset>
             <!-- Confirmation Email Checkbox -->
             <div class="form-group">
@@ -146,7 +146,7 @@
     <!-- Return to SEES main page -->
     <div class="border-top pt-3">
         <small class="text-muted">
-            Already voted? Go back to the main <a href="https://seescience.org">election</a> page.
+            <p>Already voted? Go back to the main <a href="https://seescience.org/usergroup_election2024/">election</a> page. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
         </small>
     </div>
 {% endblock content %}
