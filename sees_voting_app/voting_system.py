@@ -37,6 +37,7 @@ class Vote(Base):
     selection_2 = Column(String(255), nullable=False)
     selection_3 = Column(String(255), nullable=False)
     selection_4 = Column(String(255), nullable=False)
+    timestamp = Column(String(255), nullable=False)
 
 
 @dataclass
@@ -136,7 +137,8 @@ class VotingSystem:
             selection_1=voter.selection_1,
             selection_2=voter.selection_2,
             selection_3=voter.selection_3,
-            selection_4=voter.selection_4
+            selection_4=voter.selection_4,
+            timestamp=timestamp
         )
 
         # Add the new Vote instance to the database session and commit the changes
