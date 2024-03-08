@@ -28,10 +28,10 @@ def NoDefaultRequired(form, field) -> None:
 class VoteForm(FlaskForm):
     """Form template for the ranking vote."""
 
-    full_name = StringField("Full Name", validators=[DataRequired()])
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    full_name = StringField("Your Full Name", validators=[DataRequired()])
+    email = StringField("Your Email", validators=[DataRequired(), Email()])
     orcid_id = StringField(
-        "ORCID iD (16-digit number)",
+        "Your ORCID ID (16-digit number)",
         validators=[
             DataRequired(),
             Regexp(
@@ -47,7 +47,7 @@ class VoteForm(FlaskForm):
     selection_3 = SelectField("Choice 3", choices=[])
     selection_4 = SelectField("Choice 4", choices=[])
     selection_5 = SelectField("Choice 5", choices=[])
-    send_email = BooleanField("Send a confirmation email")
+    send_email = BooleanField("Send a confirmation email", default="checked")
     submit = SubmitField("Submit Your Vote")
 
     def set_candidate_choices(self, candidates: list[Candidate]) -> None:
