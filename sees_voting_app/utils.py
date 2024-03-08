@@ -38,7 +38,7 @@ def send_comfirmation_email(sender_address, voter: Voter) -> None:
     # Set the selection string
     selections = "\n".join(
         [
-            f"{selection.name}: <a href='{selection.bio_url}'>{selection.bio_url}</a><br>"
+            f"{selection.name}<br>"
             for selection in voter.selections_list
         ]
     )
@@ -54,6 +54,8 @@ def send_comfirmation_email(sender_address, voter: Voter) -> None:
 
             <p>Your selections are as follows:<br>
             {selections}</p>
+
+            <p> You can see the full list of candidates and their biographies on the <a href="https://seescience.org/usergroup_election2024/#candidates">SEES election website</a>.</p>
 
             <p>This is an automated message. Please do not reply to this email.</p>
 
