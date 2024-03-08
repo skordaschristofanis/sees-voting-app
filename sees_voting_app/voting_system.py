@@ -112,7 +112,7 @@ class VotingSystem:
             voter.selection_4,
         ]
         for selection in selections:
-            if selection == "default":
+            if selection == "None":
                 continue
             for candidate in candidates:
                 if selection == candidate.name:

@@ -6,7 +6,7 @@ $(document).ready(function() {
         var previous = $(this).data("previous");
 
         // Add the newly selected option to the array if it's not the default option
-        if (selected !== "default") {
+        if (selected !== "None") {
             selectedOptions.push(selected);
         }
 
@@ -22,7 +22,7 @@ $(document).ready(function() {
 
         // Disable the selected options in all select boxes
         $(".choice option").each(function() {
-            if (selectedOptions.includes($(this).val()) && !$(this).is(":selected") && $(this).val() !== "default") {
+            if (selectedOptions.includes($(this).val()) && !$(this).is(":selected") && $(this).val() !== "None") {
                 $(this).prop("disabled", true);
                 $(this).addClass("disabled");
             } else {

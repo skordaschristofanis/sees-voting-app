@@ -21,7 +21,7 @@ from sees_voting_app.voting_system import Candidate
 
 def NoDefaultRequired(form, field) -> None:
     """Validator to ensure that the default option is not selected."""
-    if field.data == "default":
+    if field.data == "None":
         raise ValidationError("Please select a candidate.")
 
 
@@ -51,7 +51,7 @@ class VoteForm(FlaskForm):
 
     def set_candidate_choices(self, candidates: list[Candidate]) -> None:
         """Set the choices for the form."""
-        default_choice = ("default", "Select a candidate...")
+        default_choice = ("None", "Select a candidate...")
         choices = [default_choice] + [
             (candidate.name, candidate.name) for candidate in candidates
         ]
