@@ -46,7 +46,6 @@ class VoteForm(FlaskForm):
     selection_2 = SelectField("Choice 2", choices=[])
     selection_3 = SelectField("Choice 3", choices=[])
     selection_4 = SelectField("Choice 4", choices=[])
-    selection_5 = SelectField("Choice 5", choices=[])
     send_email = BooleanField("Send a confirmation email", default="checked")
     submit = SubmitField("Submit Your Vote")
 
@@ -60,4 +59,3 @@ class VoteForm(FlaskForm):
         self.selection_2.choices = choices
         self.selection_3.choices = choices
         self.selection_4.choices = choices
-        self.selection_5.choices = choices

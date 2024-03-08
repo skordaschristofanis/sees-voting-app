@@ -56,7 +56,6 @@ def vote():
         voter.selection_2 = request.form.get("selection_2")
         voter.selection_3 = request.form.get("selection_3")
         voter.selection_4 = request.form.get("selection_4")
-        voter.selection_5 = request.form.get("selection_5")
 
         # Record the vote
         voting_system.record_vote(voter=voter, candidates=voting_system.candidates)

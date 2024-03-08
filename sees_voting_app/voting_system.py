@@ -37,7 +37,6 @@ class Vote(Base):
     selection_2 = Column(String(255), nullable=False)
     selection_3 = Column(String(255), nullable=False)
     selection_4 = Column(String(255), nullable=False)
-    selection_5 = Column(String(255), nullable=False)
 
 
 @dataclass
@@ -62,7 +61,6 @@ class Voter:
     selection_2: str = field(init=False, compare=False, repr=False)
     selection_3: str = field(init=False, compare=False, repr=False)
     selection_4: str = field(init=False, compare=False, repr=False)
-    selection_5: str = field(init=False, compare=False, repr=False)
 
 
 @dataclass
@@ -104,7 +102,6 @@ class VotingSystem:
             voter.selection_2,
             voter.selection_3,
             voter.selection_4,
-            voter.selection_5,
         ]
 
         # Populate the voter's selections with the candidate names
@@ -113,7 +110,6 @@ class VotingSystem:
             voter.selection_2,
             voter.selection_3,
             voter.selection_4,
-            voter.selection_5,
         ]
         for selection in selections:
             if selection == "default":
@@ -129,7 +125,7 @@ class VotingSystem:
         # Write the data to the new CSV file
         with open(response_csv, "w") as file:
             writer = csv.writer(file)
-            writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4", "Pref5"])
+            writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4"])
             writer.writerow(data)
 
         # Create a new entry in the votes table
@@ -140,8 +136,7 @@ class VotingSystem:
             selection_1=voter.selection_1,
             selection_2=voter.selection_2,
             selection_3=voter.selection_3,
-            selection_4=voter.selection_4,
-            selection_5=voter.selection_5
+            selection_4=voter.selection_4
         )
 
         # Add the new Vote instance to the database session and commit the changes
