@@ -12,4 +12,4 @@
 
 source /usr/share/anaconda3/bin/activate
 conda activate votingAppENV
-python /usr/share/sees-voting-app/voting_app.py
+nohup python /usr/share/sees-voting-app/voting_app.py > /usr/share/sees-voting-app/voting_app.log 2>&1 &
