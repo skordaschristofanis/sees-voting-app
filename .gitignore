@@ -31,3 +31,6 @@ Desktop.ini
 # Sensitivite data
 data/
 .env
+
+# Flask log
+voting_app.log
