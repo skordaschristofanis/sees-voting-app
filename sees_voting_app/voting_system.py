@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
 
-from sees_voting_app.database import VoteModel, session_scope
+from sees_voting_app.database import VoteModel, session_scope, DBException
 
 
 __all__ = ["Candidate", "Voter", "VotingSystem"]
@@ -76,7 +76,10 @@ class VotingSystem:
     def orcid_exists(self, orcid_id: str) -> bool:
         """Checks if an ORCID iD already exists in the database."""
         with session_scope() as session:
-            return session.query(VoteModel.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
+            try:
+                return session.query(VoteModel.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
+            except Exception as e:
+                raise DBException(f"An error occurred while checking if the ORCID iD exists: {e}")
 
     def record_vote(self, voter: Voter, candidates: List[Candidate]) -> None:
         """Creates a .csv file with the voter's selections and adds a new entry to the votes table."""
@@ -129,11 +132,14 @@ class VotingSystem:
 
         # Add the new Vote instance to the database session and commit the changes
         with session_scope() as session:
-            session.add(new_vote)
+            try:
+                session.add(new_vote)
+            except Exception as e:
+                raise DBException(f"An error occurred while adding the new vote to the database: {e}")
 
         # Print the vote
         print(f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}")
-
+    
     @property
     def candidates(self) -> List[Candidate]:
         """Returns the list of candidates."""

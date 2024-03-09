@@ -116,6 +116,35 @@ The SEES Team
         # Temporary catch-all exception handling until the mail is properly configured
         print(f"An error occurred while sending the email: {e}")
 
+    
+def send_database_error_email(sender_address, mailing_list, error) -> None:
+        """Send an email to the admin group when a database error occurs."""
+
+        # Set the body of the message
+        body = f"""Hello all,
+
+    An error occurred while recording a vote in the SEES election. The error is as follows:
+
+    {error}
+
+    Best regards,
+    The SEES Team
+    """
+        
+        # Create the message
+        msg = EmailMessage(
+            "Database Error in SEES election.",
+            body,
+            sender_address,
+            mailing_list,
+        )
+
+        try:
+            msg.send()
+        except Exception as e:
+            # Temporary catch-all exception handling until the mail is properly configured
+            print(f"An error occurred while sending the email: {e}")
+
 
 def combine_results() -> None:
     """Combine the results and generate a responses.csv file."""

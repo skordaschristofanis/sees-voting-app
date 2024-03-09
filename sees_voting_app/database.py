@@ -22,7 +22,7 @@ from sees_voting_app.config import DBConfig
 
 # Create a SQLAlchemy engine and session
 db_config = DBConfig()
-db_engine = create_engine(db_config.database_uri)
+db_engine = create_engine(db_config.database_uri, pool_size=20, max_overflow=10, pool_timeout=30)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
 
 # Create a declarative base
@@ -53,3 +53,13 @@ class VoteModel(Base):
     selection_3 = Column(String(255), nullable=False)
     selection_4 = Column(String(255), nullable=False)
     timestamp = Column(String(255), nullable=False)
+
+
+class DBException(Exception):
+    
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.message}"
