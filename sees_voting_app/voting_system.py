@@ -18,26 +18,11 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
-from sqlalchemy import Column, Integer, String
 
-from sees_voting_app import Base, db_session
+from sees_voting_app.database import VoteModel, session_scope
 
 
 __all__ = ["Candidate", "Voter", "VotingSystem"]
-
-
-class Vote(Base):
-    __tablename__ = 'votes'
-
-    id = Column(Integer, primary_key=True)
-    full_name = Column(String(255), nullable=False)
-    email = Column(String(255), nullable=False)
-    orcid_id = Column(String(255), nullable=False)
-    selection_1 = Column(String(255), nullable=False)
-    selection_2 = Column(String(255), nullable=False)
-    selection_3 = Column(String(255), nullable=False)
-    selection_4 = Column(String(255), nullable=False)
-    timestamp = Column(String(255), nullable=False)
 
 
 @dataclass
@@ -90,7 +75,8 @@ class VotingSystem:
 
     def orcid_exists(self, orcid_id: str) -> bool:
         """Checks if an ORCID iD already exists in the database."""
-        return db_session.query(Vote.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
+        with session_scope() as session:
+            return session.query(VoteModel.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
 
     def record_vote(self, voter: Voter, candidates: List[Candidate]) -> None:
         """Creates a .csv file with the voter's selections and adds a new entry to the votes table."""
@@ -130,7 +116,7 @@ class VotingSystem:
             writer.writerow(data)
 
         # Create a new entry in the votes table
-        new_vote = Vote(
+        new_vote = VoteModel(
             full_name=voter.full_name,
             email=voter.email,
             orcid_id=voter.orcid_id,
@@ -142,8 +128,8 @@ class VotingSystem:
         )
 
         # Add the new Vote instance to the database session and commit the changes
-        db_session.add(new_vote)
-        db_session.commit()
+        with session_scope() as session:
+            session.add(new_vote)
 
         # Print the vote
         print(f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}")

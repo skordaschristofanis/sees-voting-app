@@ -13,14 +13,13 @@
 
 from flask import Flask
 from flask_mailman import Mail
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
-from sees_voting_app.config import Config, MailConfig, DBConfig
+from sees_voting_app.config import Config, MailConfig
+from sees_voting_app.database import db_engine, Base
 
 
 __all__ = ["create_flask_app"]
+
 
 # Create a Mail instance
 mail = Mail()
@@ -28,12 +27,6 @@ mail = Mail()
 mail_config = MailConfig()
 sender_address = mail_config.sender_address
 admin_mailing_list = mail_config.admin_mailing_list
-# Create a SQLAlchemy engine and session
-db_config = DBConfig()
-db_engine = create_engine(db_config.database_uri)
-db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
-# Create a declarative base
-Base = declarative_base()
 
 
 def create_flask_app(config_class=Config) -> Flask:
