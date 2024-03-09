@@ -12,12 +12,13 @@
 # This software is distributed under the terms of the MIT license.
 # -----------------------------------------------------------------------------
 
-from flask import Blueprint, render_template, request, redirect, flash
+from flask import Blueprint, render_template, request, flash
 
 from sees_voting_app import sender_address, admin_mailing_list
+from sees_voting_app.database import DBException
 from sees_voting_app.forms import VoteForm
 from sees_voting_app.voting_system import Voter, VotingSystem
-from sees_voting_app.utils import send_comfirmation_email, send_vote_to_admin_group
+from sees_voting_app.utils import send_comfirmation_email, send_vote_to_admin_group, send_database_error_email
 
 
 # Create a Blueprint for the voting routes
@@ -35,43 +36,55 @@ def vote():
     form.set_candidate_choices(voting_system.candidates)
 
     if form.validate_on_submit():
+
+        try:
+            # Check if the orcid_id is already in the database
+            if voting_system.orcid_exists(orcid_id=request.form.get("orcid_id")):
+                print("The ORCID iD is already in the database.")
+                flash("""
+    <h4>Failure to Submit the Vote</h4>
+    <p>The provided ORCID iD is already in use. Please check that your ORCID iD is correct. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+    """, "danger")
+                return render_template("vote.html", form=form)
         
-        # Check if the orcid_id is already in the database
-        if voting_system.orcid_exists(orcid_id=request.form.get("orcid_id")):
-            print("The ORCID iD is already in the database.")
+            # Create a Voter instance
+            voter = Voter()
+
+            # Process the vote
+            voter.full_name = request.form.get("full_name")
+            voter.email = request.form.get("email")
+            voter.orcid_id = request.form.get("orcid_id")
+            voter.selection_1 = request.form.get("selection_1")
+            voter.selection_2 = request.form.get("selection_2")
+            voter.selection_3 = request.form.get("selection_3")
+            voter.selection_4 = request.form.get("selection_4")
+
+            # Record the vote
+            voting_system.record_vote(voter=voter, candidates=voting_system.candidates)
+
+            # Send a confirmation email
+            if request.form.get("send_email"):
+                send_comfirmation_email(sender_address=sender_address, voter=voter)
+
+            # Notify the admin group
+            send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
+
+            # Thank the voter for voting
             flash("""
-<h4>Failure to Submit the Vote</h4>
-<p>The provided ORCID iD is already in use. Please check that your ORCID iD is correct. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-""", "danger")
-            return render_template("vote.html", form=form)
-        
-        # Create a Voter instance
-        voter = Voter()
+                <h4>Vote Submitted Successfully</h4>
+                <p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+                """, 
+                "success"
+            )
+        except DBException as e:
+            flash(f"""
+                <h4>Failure to Submit the Vote</h4>
+                <p>Please try again. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+                """, 
+                "danger"
+            )
+            send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
 
-        # Process the vote
-        voter.full_name = request.form.get("full_name")
-        voter.email = request.form.get("email")
-        voter.orcid_id = request.form.get("orcid_id")
-        voter.selection_1 = request.form.get("selection_1")
-        voter.selection_2 = request.form.get("selection_2")
-        voter.selection_3 = request.form.get("selection_3")
-        voter.selection_4 = request.form.get("selection_4")
-
-        # Record the vote
-        voting_system.record_vote(voter=voter, candidates=voting_system.candidates)
-
-        # Send a confirmation email
-        if request.form.get("send_email"):
-            send_comfirmation_email(sender_address=sender_address, voter=voter)
-
-        # Notify the admin group
-        send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
-
-        # Thank the voter for voting
-        flash("""
-<h4>Vote Submitted Successfully</h4>
-<p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-""", "success")
         return render_template("vote.html", form=form)
 
     return render_template("vote.html", form=form)
