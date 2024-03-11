@@ -12,21 +12,9 @@
 # -----------------------------------------------------------------------------
 
 from contextlib import contextmanager
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
-from sees_voting_app.config import DBConfig
-
-
-# Create a SQLAlchemy engine and session
-db_config = DBConfig()
-db_engine = create_engine(db_config.database_uri, pool_size=20, max_overflow=10, pool_timeout=30)
-db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
-
-# Create a declarative base
-Base = declarative_base()
+from sees_voting_app import db_session, Base
 
 
 # Add a context manager for the session
