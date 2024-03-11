@@ -13,9 +13,12 @@
 
 from flask import Flask
 from flask_mailman import Mail
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from sees_voting_app.config import Config, MailConfig
-from sees_voting_app.database import db_engine, Base
+from sees_voting_app.config import DBConfig
+from sqlalchemy.ext.declarative import declarative_base
 
 
 __all__ = ["create_flask_app"]
@@ -27,6 +30,12 @@ mail = Mail()
 mail_config = MailConfig()
 sender_address = mail_config.sender_address
 admin_mailing_list = mail_config.admin_mailing_list
+# Create a SQLAlchemy engine and session
+db_config = DBConfig()
+db_engine = create_engine(db_config.database_uri, pool_size=20, max_overflow=10, pool_timeout=30)
+db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
+# Create a declarative base
+Base = declarative_base()
 
 
 def create_flask_app(config_class=Config) -> Flask:
@@ -45,5 +54,10 @@ def create_flask_app(config_class=Config) -> Flask:
     from sees_voting_app.routes import voting
 
     app.register_blueprint(voting)
+
+    # Add a teardown app context to remove the database session after each request
+    @app.teardown_appcontext
+    def cleanup(response_or_exception):
+        db_session.remove()
 
     return app
