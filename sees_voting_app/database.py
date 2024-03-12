@@ -30,7 +30,7 @@ def session_scope():
 
 
 class VoteModel(Base):
-    __tablename__ = 'votes'
+    __tablename__ = "votes"
 
     id = Column(Integer, primary_key=True)
     full_name = Column(String(255), nullable=False)
@@ -44,7 +44,7 @@ class VoteModel(Base):
 
 
 class DBException(Exception):
-    
+
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)

@@ -41,12 +41,15 @@ def vote():
             # Check if the orcid_id is already in the database
             if voting_system.orcid_exists(orcid_id=request.form.get("orcid_id")):
                 print("The ORCID iD is already in the database.")
-                flash("""
-    <h4>Failure to Submit the Vote</h4>
-    <p>The provided ORCID iD is already in use. Please check that your ORCID iD is correct. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-    """, "danger")
+                flash(
+                    """
+                    <h4>Failure to Submit the Vote</h4>
+                    <p>The provided ORCID iD is already in use. Please check that your ORCID iD is correct. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+                    """,
+                    "danger",
+                )
                 return render_template("vote.html", form=form)
-        
+
             # Create a Voter instance
             voter = Voter()
 
@@ -70,18 +73,20 @@ def vote():
             send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
 
             # Thank the voter for voting
-            flash("""
+            flash(
+                """
                 <h4>Vote Submitted Successfully</h4>
                 <p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-                """, 
-                "success"
+                """,
+                "success",
             )
         except DBException as e:
-            flash(f"""
+            flash(
+                f"""
                 <h4>Failure to Submit the Vote</h4>
                 <p>Please try again. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-                """, 
-                "danger"
+                """,
+                "danger",
             )
             send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
 

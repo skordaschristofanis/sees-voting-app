@@ -40,9 +40,7 @@ class VoteForm(FlaskForm):
             ),
         ],
     )
-    selection_1 = SelectField(
-        "Choice 1", validators=[DataRequired(), NoDefaultRequired], choices=[]
-    )
+    selection_1 = SelectField("Choice 1", validators=[DataRequired(), NoDefaultRequired], choices=[])
     selection_2 = SelectField("Choice 2", choices=[])
     selection_3 = SelectField("Choice 3", choices=[])
     selection_4 = SelectField("Choice 4", choices=[])
@@ -52,9 +50,7 @@ class VoteForm(FlaskForm):
     def set_candidate_choices(self, candidates: list[Candidate]) -> None:
         """Set the choices for the form."""
         default_choice = ("None", "Select a candidate...")
-        choices = [default_choice] + [
-            (candidate.name, candidate.name) for candidate in candidates
-        ]
+        choices = [default_choice] + [(candidate.name, candidate.name) for candidate in candidates]
         self.selection_1.choices = choices
         self.selection_2.choices = choices
         self.selection_3.choices = choices

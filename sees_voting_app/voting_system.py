@@ -37,12 +37,11 @@ class Candidate:
 
 @dataclass
 class Voter:
-    """A class to represent a voter and their selections."""    
+    """A class to represent a voter and their selections."""
+
     _timestamp: str = field(init=False, compare=False, repr=False, default=datetime.now().strftime("%Y.%m.%d_%H.%M.%S"))
 
-    selections_list: List[Candidate] = field(
-        compare=False, repr=False, default_factory=list
-    )
+    selections_list: List[Candidate] = field(compare=False, repr=False, default_factory=list)
     full_name: str = field(init=False, compare=False, repr=False)
     email: str = field(init=False, compare=False, repr=False)
     orcid_id: str = field(init=False, compare=False, repr=False)
@@ -105,9 +104,7 @@ class VotingSystem:
             # Skip the header row
             next(reader)
             # Create a list of Candidate objects
-            self._candidates = [
-                Candidate(name=row[0], bio_url=row[1]) for row in reader
-            ]
+            self._candidates = [Candidate(name=row[0], bio_url=row[1]) for row in reader]
 
     def orcid_exists(self, orcid_id: str) -> bool:
         """Checks if an ORCID iD already exists in the database."""
@@ -116,7 +113,7 @@ class VotingSystem:
                 return session.query(VoteModel.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
             except Exception as e:
                 raise DBException(f"An error occurred while checking if the ORCID iD exists: {e}")
-            
+
     def record_vote_to_db(self, voter: Voter) -> None:
         """Adds a new entry to the votes table."""
         # Create a new entry in the votes table
@@ -128,16 +125,16 @@ class VotingSystem:
             selection_2=voter.selection_2,
             selection_3=voter.selection_3,
             selection_4=voter.selection_4,
-            timestamp=voter.timestamp
+            timestamp=voter.timestamp,
         )
-        
+
         # Add the new Vote instance to the database session and commit the changes
         with session_scope() as session:
             try:
                 session.add(new_vote)
             except Exception as e:
                 raise DBException(f"An error occurred while adding the new vote to the database: {e}")
-            
+
     def record_vote(self, voter: Voter) -> None:
         """Creates a .csv file with the voter's selections, appends to the vote.log and prints the vote."""
         # Set the path to the new CSV file
@@ -145,7 +142,7 @@ class VotingSystem:
 
         # Get the data format
         data = voter.prepare_data(self._candidates)
-        
+
         # Write the data to the new CSV file
         with open(response_csv, "w") as file:
             writer = csv.writer(file)
@@ -153,11 +150,15 @@ class VotingSystem:
             writer.writerow(data)
 
         # Append the vote to the log file
-        vote_logger.info(f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}, vote timestamp: {voter.timestamp}")
-        
+        vote_logger.info(
+            f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}, vote timestamp: {voter.timestamp}"
+        )
+
         # Print the vote
-        print(f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}, vote timestamp: {voter.timestamp}")
-    
+        print(
+            f"New vote submited: {voter.full_name}, {voter.email}, {voter.orcid_id}, {[candidate.name for candidate in voter.selections_list]}, vote timestamp: {voter.timestamp}"
+        )
+
     @property
     def candidates(self) -> List[Candidate]:
         """Returns the list of candidates."""

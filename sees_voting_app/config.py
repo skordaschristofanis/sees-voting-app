@@ -26,6 +26,7 @@ load_dotenv(env_path)
 
 class Config:
     """A class that includes the configuration settings for the Flask app."""
+
     SECRET_KEY = os.getenv("SECRET_KEY")
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
@@ -35,6 +36,7 @@ class Config:
 @dataclass
 class MailConfig:
     """A class that provides the sender address and mailing list."""
+
     _sender_address: str = field(init=False, compare=False, repr=False)
     _admin_mailing_list: str = field(init=False, compare=False, repr=False)
 
@@ -45,7 +47,7 @@ class MailConfig:
     @property
     def sender_address(self) -> str:
         return self._sender_address.replace(" ", "")
-    
+
     @property
     def admin_mailing_list(self) -> List[str]:
         return self._admin_mailing_list.split(",")
@@ -54,11 +56,12 @@ class MailConfig:
 @dataclass
 class DBConfig:
     """A class that provides the configuration settings for the database."""
+
     _database_uri: str = field(init=False, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         self._database_uri = os.getenv("DATABASE_URI")
-    
+
     @property
     def database_uri(self) -> str:
         return self._database_uri

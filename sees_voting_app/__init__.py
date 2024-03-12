@@ -40,18 +40,18 @@ db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind
 Base = declarative_base()
 
 # Create the logs directory if it doesn't exist
-Path('logs').mkdir(exist_ok=True)
+Path("logs").mkdir(exist_ok=True)
 # Set up vote logging
 vote_logger = logging.getLogger("vote")
 vote_logger.setLevel(logging.INFO)
 vote_handler = RotatingFileHandler("logs/sees_voting_app.log", maxBytes=10000, backupCount=1)
-vote_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
+vote_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
 vote_logger.addHandler(vote_handler)
 # Set up flask logging
 flask_logger = logging.getLogger("werkzeug")
 flask_logger.setLevel(logging.INFO)
 flask_handler = RotatingFileHandler("logs/flask.log", maxBytes=10000, backupCount=1)
-flask_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
+flask_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
 flask_logger.addHandler(flask_handler)
 
 
@@ -68,7 +68,7 @@ def create_flask_app(config_class=Config) -> Flask:
     mail.init_app(app)
 
     # Create all tables in the database
-    Base.metadata.create_all(bind=db_engine) 
+    Base.metadata.create_all(bind=db_engine)
 
     # Import and register the voting blueprint
     from sees_voting_app.routes import voting
