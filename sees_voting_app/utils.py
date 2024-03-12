@@ -27,7 +27,7 @@ __all__ = ["combine_results"]
 
 def send_comfirmation_email(sender_address, voter: Voter) -> None:
     """Send a confirmation email to the voter."""
-    
+
     # Create the message
     msg = EmailMessage(
         subject="Voting Confirmation",
@@ -36,12 +36,7 @@ def send_comfirmation_email(sender_address, voter: Voter) -> None:
     )
 
     # Set the selection string
-    selections = "\n".join(
-        [
-            f"{selection.name}<br>"
-            for selection in voter.selections_list
-        ]
-    )
+    selections = "\n".join([f"{selection.name}<br>" for selection in voter.selections_list])
 
     # Set the body of the message
     msg.body = f"""
@@ -77,9 +72,7 @@ def send_comfirmation_email(sender_address, voter: Voter) -> None:
         print(f"An error occurred while sending the email: {e}")
 
 
-def send_vote_to_admin_group(
-    sender_address, mailing_list: List[str], voter: Voter
-) -> None:
+def send_vote_to_admin_group(sender_address, mailing_list: List[str], voter: Voter) -> None:
     """Send the vote to the admin group."""
 
     # Create the selections string
@@ -116,12 +109,12 @@ The SEES Team
         # Temporary catch-all exception handling until the mail is properly configured
         print(f"An error occurred while sending the email: {e}")
 
-    
-def send_database_error_email(sender_address, mailing_list, error) -> None:
-        """Send an email to the admin group when a database error occurs."""
 
-        # Set the body of the message
-        body = f"""Hello all,
+def send_database_error_email(sender_address, mailing_list, error) -> None:
+    """Send an email to the admin group when a database error occurs."""
+
+    # Set the body of the message
+    body = f"""Hello all,
 
     An error occurred while recording a vote in the SEES election. The error is as follows:
 
@@ -130,20 +123,20 @@ def send_database_error_email(sender_address, mailing_list, error) -> None:
     Best regards,
     The SEES Team
     """
-        
-        # Create the message
-        msg = EmailMessage(
-            "Database Error in SEES election.",
-            body,
-            sender_address,
-            mailing_list,
-        )
 
-        try:
-            msg.send()
-        except Exception as e:
-            # Temporary catch-all exception handling until the mail is properly configured
-            print(f"An error occurred while sending the email: {e}")
+    # Create the message
+    msg = EmailMessage(
+        "Database Error in SEES election.",
+        body,
+        sender_address,
+        mailing_list,
+    )
+
+    try:
+        msg.send()
+    except Exception as e:
+        # Temporary catch-all exception handling until the mail is properly configured
+        print(f"An error occurred while sending the email: {e}")
 
 
 def combine_results() -> None:

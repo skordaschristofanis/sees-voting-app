@@ -11,14 +11,16 @@
 # This software is distributed under the terms of the MIT license.
 # -----------------------------------------------------------------------------
 
+import logging
 from flask import Flask
 from flask_mailman import Mail
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-from sees_voting_app.config import Config, MailConfig
-from sees_voting_app.config import DBConfig
 from sqlalchemy.ext.declarative import declarative_base
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
+
+from sees_voting_app.config import Config, MailConfig, DBConfig
 
 
 __all__ = ["create_flask_app"]
@@ -37,6 +39,21 @@ db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind
 # Create a declarative base
 Base = declarative_base()
 
+# Create the logs directory if it doesn't exist
+Path("logs").mkdir(exist_ok=True)
+# Set up vote logging
+vote_logger = logging.getLogger("vote")
+vote_logger.setLevel(logging.INFO)
+vote_handler = RotatingFileHandler("logs/sees_voting_app.log", maxBytes=10000, backupCount=1)
+vote_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
+vote_logger.addHandler(vote_handler)
+# Set up flask logging
+flask_logger = logging.getLogger("werkzeug")
+flask_logger.setLevel(logging.INFO)
+flask_handler = RotatingFileHandler("logs/flask.log", maxBytes=10000, backupCount=1)
+flask_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
+flask_logger.addHandler(flask_handler)
+
 
 def create_flask_app(config_class=Config) -> Flask:
     """Create a Flask app using the provided configuration class."""
@@ -44,11 +61,14 @@ def create_flask_app(config_class=Config) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Set the flask logger
+    app.logger = flask_logger
+
     # Initialize the Mail instance
     mail.init_app(app)
 
     # Create all tables in the database
-    Base.metadata.create_all(bind=db_engine) 
+    Base.metadata.create_all(bind=db_engine)
 
     # Import and register the voting blueprint
     from sees_voting_app.routes import voting
