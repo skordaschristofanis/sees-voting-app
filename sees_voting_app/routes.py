@@ -14,7 +14,7 @@
 
 from flask import Blueprint, render_template, request, flash
 
-from sees_voting_app import sender_address, admin_mailing_list
+from sees_voting_app import sender_address, admin_mailing_list, vote_logger
 from sees_voting_app.database import DBException
 from sees_voting_app.forms import VoteForm
 from sees_voting_app.voting_system import Voter, VotingSystem
@@ -40,7 +40,8 @@ def vote():
         try:
             # Check if the orcid_id is already in the database
             if voting_system.orcid_exists(orcid_id=request.form.get("orcid_id")):
-                print("The ORCID iD is already in the database.")
+                print(f"The ORCID iD {request.form.get('orcid_id')} is already in the database.")
+                vote_logger.warning(f"The ORCID iD {request.form.get('orcid_id')} is already in the database.")
                 flash(
                     """
                     <h4>Failure to Submit the Vote</h4>
@@ -49,46 +50,43 @@ def vote():
                     "danger",
                 )
                 return render_template("vote.html", form=form)
-
-            # Create a Voter instance
-            voter = Voter()
-
-            # Process the vote
-            voter.full_name = request.form.get("full_name")
-            voter.email = request.form.get("email")
-            voter.orcid_id = request.form.get("orcid_id")
-            voter.selection_1 = request.form.get("selection_1")
-            voter.selection_2 = request.form.get("selection_2")
-            voter.selection_3 = request.form.get("selection_3")
-            voter.selection_4 = request.form.get("selection_4")
-
-            # Record the vote
-            voting_system.record_vote(voter=voter)
-
-            # Send a confirmation email
-            if request.form.get("send_email"):
-                send_comfirmation_email(sender_address=sender_address, voter=voter)
-
-            # Notify the admin group
-            send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
-
-            # Thank the voter for voting
-            flash(
-                """
-                <h4>Vote Submitted Successfully</h4>
-                <p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-                """,
-                "success",
-            )
         except DBException as e:
-            flash(
-                f"""
-                <h4>Failure to Submit the Vote</h4>
-                <p>Please try again. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
-                """,
-                "danger",
-            )
             send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
+
+        # Create a Voter instance
+        voter = Voter()
+
+        # Process the vote
+        voter.full_name = request.form.get("full_name")
+        voter.email = request.form.get("email")
+        voter.orcid_id = request.form.get("orcid_id")
+        voter.selection_1 = request.form.get("selection_1")
+        voter.selection_2 = request.form.get("selection_2")
+        voter.selection_3 = request.form.get("selection_3")
+        voter.selection_4 = request.form.get("selection_4")
+
+        # Record the vote
+        voting_system.record_vote(voter=voter)
+        try:
+            voting_system.record_vote_to_db(voter=voter)
+        except DBException as e:
+            send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
+
+        # Send a confirmation email
+        if request.form.get("send_email"):
+            send_comfirmation_email(sender_address=sender_address, voter=voter)
+
+        # Notify the admin group
+        send_vote_to_admin_group(sender_address=sender_address, mailing_list=admin_mailing_list, voter=voter)
+
+        # Thank the voter for voting
+        flash(
+            """
+            <h4>Vote Submitted Successfully</h4>
+            <p>Your vote has been recorded. Thank you for your participation. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+            """,
+            "success",
+        )
 
         return render_template("vote.html", form=form)
 
