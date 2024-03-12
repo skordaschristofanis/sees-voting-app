@@ -32,5 +32,5 @@ Desktop.ini
 data/
 .env
 
-# Flask log
-voting_app.log
+# Logs
+logs/

@@ -60,7 +60,7 @@ def vote():
             voter.selection_4 = request.form.get("selection_4")
 
             # Record the vote
-            voting_system.record_vote(voter=voter, candidates=voting_system.candidates)
+            voting_system.record_vote(voter=voter)
 
             # Send a confirmation email
             if request.form.get("send_email"):
