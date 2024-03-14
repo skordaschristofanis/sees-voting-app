@@ -82,6 +82,22 @@ def vote():
         except DBException as e:
             send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
 
+        try:
+            # Check if the email is already in the database
+            if voting_system.email_exists(email=request.form.get("email")):
+                print(f"The email address {request.form.get('email')} is already in the database.")
+                vote_logger.warning(f"The email address {request.form.get('email')} is already in the database.")
+                flash(
+                    """
+                    <h4>Failure to Submit the Vote</h4>
+                    <p>The provided email address is already in use. Please check that your email address is correct. If you continue to experience issues or have any concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+                    """,
+                    "danger",
+                )
+                return render_template("vote.html", form=form, voting_ended=voting_ended)
+        except DBException as e:
+            send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
+
         # Create a Voter instance
         voter = Voter()
 

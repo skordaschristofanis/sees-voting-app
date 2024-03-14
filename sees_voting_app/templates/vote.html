@@ -33,10 +33,10 @@
                 </div>
                 <!-- Email Field -->
                 <div class="form-group">
-                    {{ form.email.label(class="form-control-label") }} (Are you a
+                    {{ form.email.label(class="form-control-label") }} (if you are not a
                     member of the
                     <a href=https://millenia.cars.aps.anl.gov/mailman/listinfo/sees_users/>
-                    SEES Users Mailing List</a>?)
+                    SEES Users Mailing List</a>, please consider joining.)
                     {% if form.email.errors %}
                         {{ form.email(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
