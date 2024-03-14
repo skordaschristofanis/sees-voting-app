@@ -35,7 +35,7 @@ def main() -> None:
     elif args.debug:
         app.run(host="0.0.0.0", port=5000, debug=True)
     else:
-        subprocess.run(["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "voting_app:app"])
+        subprocess.run(["gunicorn", "-c", "sees_voting_app/gunicorn_config.py", "voting_app:app"])
 
 
 if __name__ == "__main__":
