@@ -34,7 +34,7 @@ sender_address = mail_config.sender_address
 admin_mailing_list = mail_config.admin_mailing_list
 # Create a SQLAlchemy engine and session
 db_config = DBConfig()
-db_engine = create_engine(db_config.database_uri, pool_size=20, max_overflow=10, pool_timeout=30)
+db_engine = create_engine(db_config.database_uri, pool_size=1, max_overflow=2, pool_timeout=30)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
 # Create a declarative base
 Base = declarative_base()
@@ -44,13 +44,13 @@ Path("logs").mkdir(exist_ok=True)
 # Set up vote logging
 vote_logger = logging.getLogger("vote")
 vote_logger.setLevel(logging.INFO)
-vote_handler = RotatingFileHandler("logs/sees_voting_app.log", maxBytes=10000, backupCount=1)
+vote_handler = RotatingFileHandler("logs/sees_voting_app.log", maxBytes=512*1024*1024, backupCount=1000000)
 vote_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
 vote_logger.addHandler(vote_handler)
 # Set up flask logging
 flask_logger = logging.getLogger("werkzeug")
 flask_logger.setLevel(logging.INFO)
-flask_handler = RotatingFileHandler("logs/flask.log", maxBytes=10000, backupCount=1)
+flask_handler = RotatingFileHandler("logs/flask.log", maxBytes=512*1024*1024, backupCount=1000000)
 flask_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
 flask_logger.addHandler(flask_handler)
 
