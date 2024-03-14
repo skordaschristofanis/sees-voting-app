@@ -12,7 +12,7 @@
 # -----------------------------------------------------------------------------
 
 from contextlib import contextmanager
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint
 
 from sees_voting_app import db_session, Base
 
@@ -34,13 +34,15 @@ class VoteModel(Base):
 
     id = Column(Integer, primary_key=True)
     full_name = Column(String(255), nullable=False)
-    email = Column(String(255), nullable=False)
-    orcid_id = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
+    orcid_id = Column(String(255), nullable=False, unique=True)
     selection_1 = Column(String(255), nullable=False)
     selection_2 = Column(String(255), nullable=False)
     selection_3 = Column(String(255), nullable=False)
     selection_4 = Column(String(255), nullable=False)
-    timestamp = Column(String(255), nullable=False)
+    timestamp = Column(DateTime, nullable=False)
+
+    __table_args__ = (UniqueConstraint("email", "orcid_id", name="unique_email_orcid"), )
 
 
 class DBException(Exception):
