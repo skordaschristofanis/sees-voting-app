@@ -150,7 +150,7 @@ def combine_results() -> None:
     # Write the header to the combined CSV file
     with open(combined_results_csv, "w") as file:
         writer = csv.writer(file)
-        writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4", "Pref5"])
+        writer.writerow(["FullName", "Email", "ORCIDiD", "Pref1", "Pref2", "Pref3", "Pref4"])
 
     # Append the data from each CSV file to the combined CSV file
     for csv_file in csv_files:
