@@ -20,6 +20,10 @@ from sees_voting_app.forms import VoteForm
 from sees_voting_app.voting_system import Voter, VotingSystem
 from sees_voting_app.utils import send_comfirmation_email, send_vote_to_admin_group, send_database_error_email
 
+from sees_voting_app.config import initialize_db
+
+global db_config, db_engine, db_session, base
+db_config = db_engine = db_session = base = None
 
 # Create a Blueprint for the voting routes
 voting = Blueprint("voting", __name__)
@@ -28,7 +32,9 @@ voting = Blueprint("voting", __name__)
 @voting.route("/", methods=["GET", "POST"])
 def vote():
     """Display the voting form and process the vote."""
-
+    global db_config
+    if db_config is None:
+        db_config, db_engine, db_session, base = initialize_db()
     # Create a form instance of the VoteForm
     form = VoteForm()
     # Get the list of candidates and set the choices for the form

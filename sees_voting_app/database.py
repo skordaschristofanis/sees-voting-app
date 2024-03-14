@@ -14,13 +14,20 @@
 from contextlib import contextmanager
 from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint
 
-from sees_voting_app import db_session, Base
+from sees_voting_app import Base, initialize_db
+
+# Move the global declaration to the top
+global db_session
+db_session = None
 
 
 # Add a context manager for the session
 @contextmanager
 def session_scope():
     """Return a session scope for the database."""
+    global db_session
+    if db_session is None:
+        db_config, db_engine, db_session, Base = initialize_db()
     session = db_session()
     try:
         yield session
@@ -42,7 +49,7 @@ class VoteModel(Base):
     selection_4 = Column(String(255), nullable=False)
     timestamp = Column(DateTime, nullable=False)
 
-    __table_args__ = (UniqueConstraint("email", "orcid_id", name="unique_email_orcid"), )
+    __table_args__ = (UniqueConstraint("email", "orcid_id", name="unique_email_orcid"),)
 
 
 class DBException(Exception):

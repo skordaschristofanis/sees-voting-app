@@ -11,6 +11,9 @@
 # -----------------------------------------------------------------------------
 
 import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 from dataclasses import dataclass, field
 from dotenv import load_dotenv
 from pathlib import Path
@@ -65,3 +68,13 @@ class DBConfig:
     @property
     def database_uri(self) -> str:
         return self._database_uri
+
+
+def initialize_db():
+    """Initialize the database."""
+    db_config = DBConfig()
+    db_engine = create_engine(db_config.database_uri, pool_size=10, max_overflow=2, pool_timeout=30)
+    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
+    # Create a declarative base
+    base = declarative_base()
+    return db_config, db_engine, db_session, base
