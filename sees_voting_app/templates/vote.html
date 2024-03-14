@@ -139,7 +139,11 @@
             </div>
             <!-- Submit Button -->
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {% if voting_ended %}
+                    {{ form.submit(class="btn btn-outline-info btn-disabled", disabled="disabled") }}
+                {% else %}
+                    {{ form.submit(class="btn btn-outline-info") }}
+                {% endif %}
             </div>
         </form>
     </div>

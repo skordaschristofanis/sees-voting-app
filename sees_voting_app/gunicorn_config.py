@@ -18,6 +18,7 @@ workers = 8
 timeout = 60
 graceful_timeout = 30
 accesslog = "logs/gunicorn_access.log"
+errorlog = "logs/gunicorn_error.log"
 
 
 def post_fork(server, worker) -> None:
