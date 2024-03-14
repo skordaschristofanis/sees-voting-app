@@ -34,7 +34,7 @@ sender_address = mail_config.sender_address
 admin_mailing_list = mail_config.admin_mailing_list
 # Create a SQLAlchemy engine and session
 db_config = DBConfig()
-db_engine = create_engine(db_config.database_uri, pool_size=20, max_overflow=10, pool_timeout=30)
+db_engine = create_engine(db_config.database_uri, pool_size=1, max_overflow=2, pool_timeout=30)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db_engine))
 # Create a declarative base
 Base = declarative_base()
