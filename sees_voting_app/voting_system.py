@@ -14,7 +14,6 @@
 # -----------------------------------------------------------------------------
 
 import csv
-import logging
 from datetime import datetime
 from dataclasses import dataclass, field
 from pathlib import Path

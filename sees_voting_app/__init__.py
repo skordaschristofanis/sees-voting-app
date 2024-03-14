@@ -29,6 +29,8 @@ mail = Mail()
 mail_config = MailConfig()
 sender_address = mail_config.sender_address
 admin_mailing_list = mail_config.admin_mailing_list
+# Set the voting period end date
+voting_ends = Config.VOTING_ENDS
 
 # Initialize the database
 db_config, db_engine, db_session, Base = initialize_db()

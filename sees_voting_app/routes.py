@@ -13,13 +13,13 @@
 # -----------------------------------------------------------------------------
 
 from flask import Blueprint, render_template, request, flash
+from datetime import datetime
 
-from sees_voting_app import sender_address, admin_mailing_list, vote_logger
+from sees_voting_app import sender_address, admin_mailing_list, vote_logger, voting_ends
 from sees_voting_app.database import DBException
 from sees_voting_app.forms import VoteForm
 from sees_voting_app.voting_system import Voter, VotingSystem
 from sees_voting_app.utils import send_comfirmation_email, send_vote_to_admin_group, send_database_error_email
-
 from sees_voting_app.config import initialize_db
 
 global db_config, db_engine, db_session, base
@@ -41,7 +41,30 @@ def vote():
     voting_system = VotingSystem()
     form.set_candidate_choices(voting_system.candidates)
 
+    # Check if the voting period has ended
+    voting_ended = datetime.now() >= voting_ends
+
+    if voting_ended:
+        flash(
+            """
+            <p>The voting period has ended. We are no longer accepting votes. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+            """,
+            "danger",
+        )
+        return render_template('vote.html', form=form, voting_ended=voting_ended)
+
     if form.validate_on_submit():
+
+        # Check if the voting period has ended
+        if datetime.now() > voting_ends:
+            flash(
+                """
+                <h4>Failure to Submit the Vote</h4>
+                <p>The voting period has ended. We are no longer accepting votes. If you have any questions or concerns, please do not hesitate to contact us at <a href="mailto:sees_info@millenia.cars.aps.anl.gov">sees_info@millenia.cars.aps.anl.gov</a>.</p>
+                """,
+                "danger",
+            )
+            return render_template("vote.html", form=form, voting_ended=voting_ended)
 
         try:
             # Check if the orcid_id is already in the database
@@ -55,7 +78,7 @@ def vote():
                     """,
                     "danger",
                 )
-                return render_template("vote.html", form=form)
+                return render_template("vote.html", form=form, voting_ended=voting_ended)
         except DBException as e:
             send_database_error_email(sender_address=sender_address, mailing_list=admin_mailing_list, error=e.message)
 
@@ -94,6 +117,6 @@ def vote():
             "success",
         )
 
-        return render_template("vote.html", form=form)
+        return render_template("vote.html", form=form, voting_ended=voting_ended)
 
-    return render_template("vote.html", form=form)
+    return render_template("vote.html", form=form, voting_ended=voting_ended)

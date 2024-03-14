@@ -54,3 +54,9 @@ footer {
     background-color: #852f36a6 !important;
     border-color: #852f36a6 !important;
 }
+
+.btn-disabled {
+    background-color: #e4d6d8!important;
+    color: #817c7d!important;
+    border-color: #e4d6d8!important;
+}

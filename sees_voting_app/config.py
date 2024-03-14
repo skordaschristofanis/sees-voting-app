@@ -11,6 +11,7 @@
 # -----------------------------------------------------------------------------
 
 import os
+from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -34,6 +35,7 @@ class Config:
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
     MAIL_USE_TLS = os.getenv("MAIL_USE_TLS")
+    VOTING_ENDS = datetime.strptime(os.getenv("VOTING_ENDS"), "%Y-%m-%d %H:%M:%S")
 
 
 @dataclass
