@@ -112,6 +112,14 @@ class VotingSystem:
                 return session.query(VoteModel.orcid_id).filter_by(orcid_id=orcid_id).first() is not None
             except Exception as e:
                 raise DBException(f"An error occurred while checking if the ORCID iD exists: {e}")
+            
+    def email_exists(self, email: str) -> bool:
+        """Checks if an email address already exists in the database."""
+        with session_scope() as session:
+            try:
+                return session.query(VoteModel.email).filter_by(email=email).first() is not None
+            except Exception as e:
+                raise DBException(f"An error occurred while checking if the email address exists: {e}")
 
     def record_vote_to_db(self, voter: Voter) -> None:
         """Adds a new entry to the votes table."""
